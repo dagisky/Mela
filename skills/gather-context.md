@@ -4,7 +4,7 @@ name: Gather Context
 version: 1.0.0
 description: Gather focused context before answering.
 allowed_tools:
-  - echo
+  - arxiv_search
 invocation_mode: preload
 validators: []
 ---

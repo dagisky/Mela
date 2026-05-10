@@ -95,6 +95,12 @@ export class ToolExecutor {
     }
 
     try {
+      await this.config.store?.appendEvent(createRuntimeEvent(RuntimeEventTypes.ToolCallStarted, context, {
+        toolName: tool.name,
+        toolCallId: toolCall.id,
+        activity: this.safeActivity(tool, executableInput),
+        displayName: tool.display?.name,
+      }));
       const executionResult = await this.scheduler.schedule(tool.concurrencySafe ?? true, async () => {
         return this.withTimeout(
           tool.execute(executableInput, createToolUseContext(context, this.config.store)),
@@ -135,6 +141,8 @@ export class ToolExecutor {
       await this.config.store?.appendEvent(createRuntimeEvent(RuntimeEventTypes.ToolCallCompleted, context, {
         toolName: tool.name,
         toolCallId: toolCall.id,
+        activity: this.safeResult(tool, budgeted.output),
+        displayName: tool.display?.name,
       }));
       return modelResult;
     } catch (error) {
@@ -192,5 +200,21 @@ export class ToolExecutor {
         },
       );
     });
+  }
+
+  private safeActivity(tool: { readonly name: string; readonly display?: { readonly name?: string; activity?(input: unknown): string } }, input: unknown): string {
+    try {
+      return tool.display?.activity?.(input) ?? `Running ${tool.display?.name ?? tool.name}`;
+    } catch {
+      return `Running ${tool.display?.name ?? tool.name}`;
+    }
+  }
+
+  private safeResult(tool: { readonly name: string; readonly display?: { readonly name?: string; result?(output: unknown): string } }, output: unknown): string {
+    try {
+      return tool.display?.result?.(output) ?? `Completed ${tool.display?.name ?? tool.name}`;
+    } catch {
+      return `Completed ${tool.display?.name ?? tool.name}`;
+    }
   }
 }

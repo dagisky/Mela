@@ -20,6 +20,12 @@ export interface ToolUseContext {
   readonly store?: PersistenceStore;
 }
 
+export interface ToolDisplay<TInput = unknown, TOutput = unknown> {
+  readonly name?: string;
+  activity?(input: TInput): string;
+  result?(output: TOutput): string;
+}
+
 export type ValidationResult<TInput> =
   | { readonly ok: true; readonly value: TInput }
   | { readonly ok: false; readonly message: string };
@@ -35,6 +41,7 @@ export interface RuntimeTool<TInput = unknown, TOutput = unknown> {
   readonly timeoutMs: number;
   readonly maxResultSizeBytes?: number;
   readonly concurrencySafe?: boolean;
+  readonly display?: ToolDisplay<TInput, TOutput>;
   validateInput(input: unknown): ValidationResult<TInput>;
   checkPermissions(input: TInput, context: RunContext): Promise<PermissionDecision>;
   execute(input: TInput, context: ToolUseContext): Promise<ToolExecutionResult<TOutput>>;
@@ -65,4 +72,3 @@ export function createDefaultToolResultMapper<TOutput>() {
 export function createToolUseContext(runContext: RunContext, store?: PersistenceStore): ToolUseContext {
   return { runContext, store };
 }
-

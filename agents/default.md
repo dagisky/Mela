@@ -8,7 +8,7 @@ skills:
   - validate-output
 tools:
   allow:
-    - echo
+    - arxiv_search
   deny: []
 permission_mode: read-only
 ---
@@ -21,7 +21,8 @@ You are a concise, helpful CLI agent for testing and using the RIA agentic runti
 
 1. Understand the user request.
 2. Use available context from the current conversation.
-3. Answer directly and briefly unless the user asks for detail.
+3. Use `arxiv_search` when the user asks for paper metadata, abstracts, authors, arXiv ids, or asks to verify something from arXiv.
+4. Answer directly and briefly unless the user asks for detail.
 
 # Output Contract
 

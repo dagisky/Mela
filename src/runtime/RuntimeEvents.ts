@@ -16,6 +16,7 @@ export const RuntimeEventTypes = {
   ModelRequestFailed: 'model.request.failed',
   ModelTokenDelta: 'model.token.delta',
   ToolCallRequested: 'tool.call.requested',
+  ToolCallStarted: 'tool.call.started',
   ToolCallCompleted: 'tool.call.completed',
   ToolCallFailed: 'tool.call.failed',
   ToolCallPermissionDenied: 'tool.call.permission_denied',

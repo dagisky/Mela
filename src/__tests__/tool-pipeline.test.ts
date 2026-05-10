@@ -7,6 +7,7 @@ import { ToolExecutor } from '../tools/ToolExecutor.js';
 import { ToolScheduler } from '../tools/ToolScheduler.js';
 import { createDefaultToolResultMapper, type RuntimeTool } from '../tools/RuntimeTool.js';
 import { createRunContext } from '../runtime/RunContext.js';
+import { InMemoryStore } from '../persistence/InMemoryStore.js';
 
 function createTool(overrides: Partial<RuntimeTool<Record<string, unknown>, unknown>> = {}): RuntimeTool<Record<string, unknown>, unknown> {
   return {
@@ -136,6 +137,35 @@ describe('tool executor', () => {
     expect(JSON.parse(result.content)).toMatchObject({ ok: true, output: { value: 1 } });
   });
 
+  it('emits tool display activity events around execution', async () => {
+    const store = new InMemoryStore();
+    const executor = new ToolExecutor({
+      registry: new RuntimeToolRegistry([createTool({
+        display: {
+          name: 'Echo',
+          activity: (input) => `Echoing ${String(input.value)}`,
+          result: (output) => `Echoed ${String((output as { value?: unknown }).value)}`,
+        },
+      })]),
+      store,
+    });
+    const context = createRunContext({ runId: 'run-display', sessionId: 'session-display' });
+
+    await executor.executeToolOrError({ id: 'call-1', name: 'echo', input: { value: 1 } }, context);
+
+    const session = await store.loadSession('session-display');
+    expect(session.events).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        type: 'tool.call.started',
+        payload: expect.objectContaining({ activity: 'Echoing 1', displayName: 'Echo' }),
+      }),
+      expect.objectContaining({
+        type: 'tool.call.completed',
+        payload: expect.objectContaining({ activity: 'Echoed 1', displayName: 'Echo' }),
+      }),
+    ]));
+  });
+
   it('turns thrown execution errors into model-visible results', async () => {
     const tool = createTool({ execute: async () => { throw new Error('boom'); } });
     const executor = new ToolExecutor({ registry: new RuntimeToolRegistry([tool]) });
@@ -181,4 +211,3 @@ describe('tool scheduler', () => {
     expect(order).toEqual(['a-start', 'a-end', 'b-start', 'b-end']);
   });
 });
-

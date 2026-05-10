@@ -19,8 +19,12 @@ export class TextRenderer extends BaseRenderer {
   }
 
   renderEvent(event: RuntimeEventRecord): void {
-    if (event.type.includes('model.request')) this.write(`[model] ${event.type}`);
-    else if (event.type.includes('tool.call')) this.write(`[tool] ${event.type}`);
+    if (event.type === 'model.request.started') this.write('[model] thinking...');
+    else if (event.type === 'model.request.completed') return;
+    else if (event.type.includes('model.request')) this.write(`[model] ${event.type}`);
+    else if (event.type === 'tool.call.started' || event.type === 'tool.call.completed') {
+      this.write(`[tool] ${activityText(event) ?? event.type}`);
+    } else if (event.type.includes('tool.call')) this.write(`[tool] ${event.type}`);
     else if (event.type.includes('approval')) this.write(`[approval] ${event.type}`);
     else if (event.type.includes('run.')) this.write(`[run] ${event.type}`);
   }
@@ -41,6 +45,11 @@ export class TextRenderer extends BaseRenderer {
   renderError(error: CliError): void {
     this.writeError(`${error.errorCode}: ${error.message}`);
   }
+}
+
+function activityText(event: RuntimeEventRecord): string | undefined {
+  const activity = event.payload.activity;
+  return typeof activity === 'string' && activity.length > 0 ? activity : undefined;
 }
 
 function formatData(data: unknown): string {
