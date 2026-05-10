@@ -1,0 +1,25 @@
+node_modules
+dist
+*.tsbuildinfo
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Runtime output
+.runtime
+coverage
+
+# Logs and package-manager caches
+*.log
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Editor/system noise
+.DS_Store
+Thumbs.db
+.vscode
+.idea
