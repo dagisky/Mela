@@ -45,8 +45,8 @@ export function chatUsage(): string {
 Options:
   --agent <id>       Agent id, default ${DEFAULT_CLI_CONFIG.agentId}
   --storage <dir>    Runtime persistence directory, default ${DEFAULT_CLI_CONFIG.storagePath}
-  --provider <name>  mock | openai, default ${DEFAULT_CLI_CONFIG.provider}
-  --model <id>       Model id, default OPENAI_MODEL or ${DEFAULT_CLI_CONFIG.model}
+  --provider <name>  mock | openai | nvidia, default ${DEFAULT_CLI_CONFIG.provider}
+  --model <id>       Model id, default: agent's declared model, else the provider's own model list (<PROVIDER>_MODELS), else ${DEFAULT_CLI_CONFIG.model}
   --cwd <dir>        Working directory, default process cwd
   --env <path>       Env file, default .env
   --tools <dir>      Tool implementation directory, default ${DEFAULT_CLI_CONFIG.toolsPath}
@@ -64,8 +64,8 @@ export function consoleUsage(): string {
 Options:
   --agent <id>       Agent id, default ${DEFAULT_CLI_CONFIG.agentId}
   --storage <dir>    Runtime persistence directory, default ${DEFAULT_CLI_CONFIG.storagePath}
-  --provider <name>  mock | openai, default ${DEFAULT_CLI_CONFIG.provider}
-  --model <id>       Model id, default OPENAI_MODEL or ${DEFAULT_CLI_CONFIG.model}
+  --provider <name>  mock | openai | nvidia, default ${DEFAULT_CLI_CONFIG.provider}
+  --model <id>       Model id, default: agent's declared model, else the provider's own model list (<PROVIDER>_MODELS), else ${DEFAULT_CLI_CONFIG.model}
   --cwd <dir>        Working directory, default process cwd
   --env <path>       Env file, default .env
   --tools <dir>      Tool implementation directory, default ${DEFAULT_CLI_CONFIG.toolsPath}
@@ -79,7 +79,7 @@ export function doctorUsage(): string {
 Options:
   --agent <id>       Agent id to validate, default ${DEFAULT_CLI_CONFIG.agentId}
   --storage <dir>    Runtime persistence directory, default ${DEFAULT_CLI_CONFIG.storagePath}
-  --provider <name>  mock | openai, default ${DEFAULT_CLI_CONFIG.provider}
+  --provider <name>  mock | openai | nvidia, default ${DEFAULT_CLI_CONFIG.provider}
   --cwd <dir>        Working directory, default process cwd
   --env <path>       Env file, default .env
   --tools <dir>      Tool implementation directory, default ${DEFAULT_CLI_CONFIG.toolsPath}

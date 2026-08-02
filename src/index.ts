@@ -89,12 +89,18 @@ export {
   createFallbackLLMClient,
   createMockLLMClient,
   createRetryingLLMClient,
+  createRoutingLLMClient,
 } from './models/LLMClient.js';
 export { createOpenAIClient } from './models/OpenAIClient.js';
 export type { OpenAIClientConfig } from './models/OpenAIClient.js';
+export { createOpenAICompatibleChatClient } from './models/OpenAICompatibleChatClient.js';
+export type { OpenAICompatibleChatClientConfig } from './models/OpenAICompatibleChatClient.js';
+export { createNvidiaClient } from './models/NvidiaClient.js';
+export type { NvidiaClientConfig } from './models/NvidiaClient.js';
 export type {
   LLMClient,
   LLMClientMetadata,
+  LLMClientResolver,
   LLMMessage,
   LLMRequest,
   LLMResponse,
@@ -129,8 +135,11 @@ export { ConsoleCommandBus } from './cli/ConsoleCommandBus.js';
 export type { ConsoleCommand, ConsoleCommandInput, ConsoleCommandResult } from './cli/ConsoleCommand.js';
 export { parseConsoleInput } from './cli/ConsoleInputParser.js';
 export type { ParsedConsoleInput } from './cli/ConsoleInputParser.js';
-export { createCliConfig } from './cli/CliConfig.js';
+export { createCliConfig, DEFAULT_CLI_CONFIG } from './cli/CliConfig.js';
 export type { CliConfig, CliDiagnostic, CliOutputMode, CliProvider } from './cli/CliConfig.js';
+export { createDefaultModelProviders, resolveModelProvider } from './cli/CliModelProvider.js';
+export type { CliModelProvider, ModelDescriptor } from './cli/CliModelProvider.js';
+export { createCliModelClientRouter } from './cli/ModelClientRouter.js';
 export { parseCliArgs } from './cli/CliArgs.js';
 export type { ParsedCliArgs } from './cli/CliArgs.js';
 export { loadDotEnv } from './cli/DotEnvLoader.js';
@@ -142,7 +151,7 @@ export { SilentRenderer } from './cli/SilentRenderer.js';
 export { createRenderer } from './cli/RendererFactory.js';
 export { LocalAgentProvider } from './cli/LocalAgentProvider.js';
 export { AgentDefinitionLoader, manifestToAgentDefinition } from './definitions/AgentDefinitionLoader.js';
-export type { AgentManifest } from './definitions/AgentDefinitionLoader.js';
+export type { AgentManifest, AgentManifestModel } from './definitions/AgentDefinitionLoader.js';
 export { SkillDefinitionLoader } from './definitions/SkillDefinitionLoader.js';
 export type { SkillDefinition } from './definitions/SkillDefinitionLoader.js';
 export { LocalAgentDefinitionProvider, LocalSkillDefinitionProvider } from './definitions/LocalDefinitionProvider.js';

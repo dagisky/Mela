@@ -14,6 +14,7 @@ export function createDefaultCommandRegistry(): ConsoleCommandRegistry {
     toolsCommand(),
     skillsCommand(),
     agentsCommand(),
+    modelsCommand(),
     debugCommand(),
     approveCommand(),
     rejectCommand(),
@@ -145,6 +146,31 @@ function agentsCommand(): ConsoleCommand {
     async execute(_input, session) {
       await session.initialize();
       return { status: 'success', data: await session.runtime?.agentProvider.listAgents() ?? [] };
+    },
+  };
+}
+
+function modelsCommand(): ConsoleCommand {
+  return {
+    name: 'models',
+    description: 'List registered models across all configured providers.',
+    usage: '/models',
+    allowedWhileRunning: true,
+    allowedWhileApprovalWaiting: true,
+    async execute(_input, session) {
+      const { provider: activeProvider, model: activeModel } = await session.resolveActiveModel();
+      const providers = session.runtime?.modelProviders ?? [];
+      return {
+        status: 'success',
+        data: providers.map((provider) => ({
+          provider: provider.name,
+          active: provider.name === activeProvider,
+          models: provider.listModels().map((model) => ({
+            ...model,
+            active: provider.name === activeProvider && model.id === activeModel,
+          })),
+        })),
+      };
     },
   };
 }

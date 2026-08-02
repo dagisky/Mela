@@ -156,6 +156,7 @@ export class ConversationEngine {
         temperature: agent.model.temperature,
         tools: this.createToolSchemas(allowedTools),
         signal: context.signal,
+        metadata: { provider: agent.model.provider },
       }).catch(async (error: unknown) => {
         const message = error instanceof Error ? error.message : String(error);
         await this.deps.store?.appendEvent(createRuntimeEvent(RuntimeEventTypes.ModelRequestFailed, context, {

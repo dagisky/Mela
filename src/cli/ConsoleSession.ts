@@ -65,6 +65,14 @@ export class ConsoleSession {
     }
   }
 
+  /** The provider/model that would actually be used for `config.agentId` right now — same
+   *  resolution `submitPrompt()` applies (explicit flag > agent-declared > provider default). */
+  async resolveActiveModel(): Promise<{ readonly provider: string; readonly model: string }> {
+    await this.initialize();
+    const agent = await this.runtimeFactory.loadAgent(this.config, this.runtime!);
+    return { provider: agent.model.provider, model: agent.model.model };
+  }
+
   enqueuePrompt(text: string): void {
     this.queue.enqueue(text);
   }
@@ -79,8 +87,8 @@ export class ConsoleSession {
     return {
       sessionId: this.sessionId,
       agentId: this.config.agentId,
-      provider: this.config.provider,
-      model: this.config.model,
+      providerOverride: this.config.provider,
+      modelOverride: this.config.model,
       storagePath: this.config.storagePath,
       cwd: this.config.cwd,
       mode: this.mode,

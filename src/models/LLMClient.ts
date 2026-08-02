@@ -140,6 +140,29 @@ export function createFallbackLLMClient(clients: readonly LLMClient[], logger?: 
   };
 }
 
+export interface LLMClientResolver {
+  resolve(providerHint: string | undefined): Promise<LLMClient>;
+}
+
+/**
+ * Composes an LLMClient that dispatches each call to a different underlying client
+ * based on `request.metadata.provider`, via the supplied resolver. Lets a single
+ * ConversationEngine serve agents that declare different model providers.
+ */
+export function createRoutingLLMClient(resolver: LLMClientResolver): LLMClient {
+  return {
+    metadata: { provider: 'routed', supportsStreaming: true, supportsTools: true },
+    async call(request) {
+      const client = await resolver.resolve(request.metadata?.provider as string | undefined);
+      return client.call(request);
+    },
+    async *stream(request) {
+      const client = await resolver.resolve(request.metadata?.provider as string | undefined);
+      yield* client.stream(request);
+    },
+  };
+}
+
 export async function collectStreamResponse(client: LLMClient, request: LLMRequest): Promise<LLMResponse> {
   let content = '';
   const toolCalls: ToolCallRequest[] = [];

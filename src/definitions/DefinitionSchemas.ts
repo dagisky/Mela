@@ -20,6 +20,17 @@ export function validateAgentFrontmatter(data: Record<string, unknown>): Validat
     }
   }
   if (data.skills !== undefined && !Array.isArray(data.skills)) errors.push('skills must be a list');
+  const model = data.model;
+  if (model !== undefined) {
+    if (!isRecord(model)) {
+      errors.push('model must be an object');
+    } else {
+      if (model.provider !== undefined && typeof model.provider !== 'string') errors.push('model.provider must be a string');
+      if (model.model !== undefined && typeof model.model !== 'string') errors.push('model.model must be a string');
+      if (model.maxTokens !== undefined && typeof model.maxTokens !== 'number') errors.push('model.maxTokens must be a number');
+      if (model.temperature !== undefined && typeof model.temperature !== 'number') errors.push('model.temperature must be a number');
+    }
+  }
   return { ok: errors.length === 0, errors };
 }
 

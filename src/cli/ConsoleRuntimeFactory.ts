@@ -8,9 +8,11 @@ import { EventBus } from '../observability/EventBus.js';
 import { createLogger, type AgentDefinition } from '../types/index.js';
 import type { ApprovalRequester } from '../human/ApprovalManager.js';
 import type { LLMClient } from '../models/LLMClient.js';
+import { createRoutingLLMClient } from '../models/LLMClient.js';
 import type { PersistenceStore } from '../persistence/PersistenceStore.js';
-import type { CliConfig, CliDiagnostic } from './CliConfig.js';
+import { DEFAULT_CLI_CONFIG, type CliConfig, type CliDiagnostic } from './CliConfig.js';
 import { createDefaultModelProviders, resolveModelProvider, type CliModelProvider } from './CliModelProvider.js';
+import { createCliModelClientRouter } from './ModelClientRouter.js';
 import { EventedPersistenceStore } from './ConsoleRuntimeEventBridge.js';
 import { LocalAgentProvider } from './LocalAgentProvider.js';
 import { loadDotEnv } from './DotEnvLoader.js';
@@ -24,6 +26,7 @@ export interface ConsoleRuntime {
   readonly approvalManager: InteractiveApprovalManager;
   readonly eventBus: EventBus;
   readonly agentProvider: LocalAgentProvider;
+  readonly modelProviders: readonly CliModelProvider[];
 }
 
 export interface ConsoleRuntimeFactoryOverrides {
@@ -42,8 +45,7 @@ export class ConsoleRuntimeFactory {
   async createRuntime(config: CliConfig): Promise<ConsoleRuntime> {
     await loadDotEnv(config.envPath);
     const providers = this.overrides.modelProviders ?? createDefaultModelProviders();
-    const provider = resolveModelProvider(config.provider, providers);
-    const modelClient = this.overrides.modelClient ?? await provider.createClient(config);
+    const modelClient = this.overrides.modelClient ?? createRoutingLLMClient(createCliModelClientRouter(providers, config));
     const fileStore = this.overrides.store ?? new FileStore(path.resolve(config.cwd, config.storagePath));
     const eventBus = new EventBus(createLogger({ serviceName: 'mela-cli' }), { retainEvents: true });
     const store = new EventedPersistenceStore({ store: fileStore, eventBus });
@@ -71,6 +73,7 @@ export class ConsoleRuntimeFactory {
       approvalManager,
       eventBus,
       agentProvider,
+      modelProviders: providers,
     };
   }
 
@@ -82,7 +85,7 @@ export class ConsoleRuntimeFactory {
     ];
     const providers = this.overrides.modelProviders ?? createDefaultModelProviders();
     try {
-      const provider = resolveModelProvider(config.provider, providers);
+      const provider = resolveModelProvider(config.provider ?? DEFAULT_CLI_CONFIG.provider, providers);
       diagnostics.push(...provider.validateConfig(config));
     } catch (error) {
       diagnostics.push({ level: 'error', code: 'unknown_provider', message: error instanceof Error ? error.message : String(error) });
@@ -101,14 +104,28 @@ export class ConsoleRuntimeFactory {
 
   async loadAgent(config: CliConfig, runtime: ConsoleRuntime): Promise<AgentDefinition> {
     const agent = await runtime.agentProvider.load(config.agentId);
+    // manifestToAgentDefinition() always fills agent.model with concrete values (its own
+    // hardcoded fallback when the agent declares none), so precedence must be resolved
+    // against the raw manifest — where "not declared" is genuinely undefined — not agent.model.
+    const manifest = await runtime.agentProvider.loadManifest(config.agentId);
+    const provider = config.provider ?? manifest?.model?.provider ?? DEFAULT_CLI_CONFIG.provider;
     return {
       ...agent,
       model: {
         ...agent.model,
-        provider: config.provider,
-        model: config.model,
+        provider,
+        model: config.model
+          ?? manifest?.model?.model
+          ?? this.resolveDefaultModel(provider, runtime.modelProviders)
+          ?? DEFAULT_CLI_CONFIG.model,
       },
     };
+  }
+
+  /** The resolved provider's own first registered model — e.g. NVIDIA_MODELS[0] — so a
+   *  provider's default model is never sourced from a different provider's env var. */
+  private resolveDefaultModel(providerName: string, providers: readonly CliModelProvider[]): string | undefined {
+    return providers.find((candidate) => candidate.name === providerName)?.listModels()[0]?.id;
   }
 
   private asInteractiveApprovalManager(

@@ -2,6 +2,13 @@ import { ExecutionMode, type AgentDefinition } from '../types/index.js';
 import { isRecord, validateAgentFrontmatter } from './DefinitionSchemas.js';
 import { parseFrontmatter, parseMarkdownSections } from './MarkdownFrontmatter.js';
 
+export interface AgentManifestModel {
+  readonly provider?: string;
+  readonly model?: string;
+  readonly maxTokens?: number;
+  readonly temperature?: number;
+}
+
 export interface AgentManifest {
   readonly id: string;
   readonly name: string;
@@ -13,6 +20,7 @@ export interface AgentManifest {
     readonly allow: readonly string[];
     readonly deny: readonly string[];
   };
+  readonly model?: AgentManifestModel;
   readonly rawMarkdown?: string;
 }
 
@@ -41,9 +49,20 @@ export class AgentDefinitionLoader {
         allow: stringArray(tools.allow),
         deny: stringArray(tools.deny),
       },
+      model: parseModel(data.model),
       rawMarkdown: body,
     };
   }
+}
+
+function parseModel(value: unknown): AgentManifestModel | undefined {
+  if (!isRecord(value)) return undefined;
+  return {
+    provider: typeof value.provider === 'string' ? value.provider : undefined,
+    model: typeof value.model === 'string' ? value.model : undefined,
+    maxTokens: typeof value.maxTokens === 'number' ? value.maxTokens : undefined,
+    temperature: typeof value.temperature === 'number' ? value.temperature : undefined,
+  };
 }
 
 export function manifestToAgentDefinition(manifest: AgentManifest): AgentDefinition {
@@ -54,10 +73,10 @@ export function manifestToAgentDefinition(manifest: AgentManifest): AgentDefinit
     category: 'utility',
     version: manifest.version,
     model: {
-      provider: 'openai',
-      model: 'gpt-5.4-mini',
-      maxTokens: 2048,
-      temperature: 0.2,
+      provider: manifest.model?.provider ?? 'openai',
+      model: manifest.model?.model ?? 'gpt-5.4-mini',
+      maxTokens: manifest.model?.maxTokens ?? 2048,
+      temperature: manifest.model?.temperature ?? 0.2,
     },
     systemPrompt: manifest.systemPrompt,
     tools: manifest.toolPolicy.allow,

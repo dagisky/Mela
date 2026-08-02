@@ -4,8 +4,8 @@ export type CliOutputMode = 'text' | 'json' | 'ndjson';
 export interface CliConfig {
   readonly agentId: string;
   readonly storagePath: string;
-  readonly provider: CliProvider;
-  readonly model: string;
+  readonly provider?: CliProvider;
+  readonly model?: string;
   readonly cwd: string;
   readonly envPath: string;
   readonly toolsPath: string;
@@ -28,8 +28,8 @@ export function createCliConfig(input: Partial<CliConfig> = {}, env: NodeJS.Proc
   return {
     agentId: input.agentId ?? env.MELA_RUNTIME_AGENT ?? DEFAULT_CLI_CONFIG.agentId,
     storagePath: input.storagePath ?? env.MELA_RUNTIME_STORAGE ?? DEFAULT_CLI_CONFIG.storagePath,
-    provider: input.provider ?? env.MELA_RUNTIME_PROVIDER ?? DEFAULT_CLI_CONFIG.provider,
-    model: input.model ?? env.OPENAI_MODEL ?? DEFAULT_CLI_CONFIG.model,
+    provider: input.provider ?? env.MELA_RUNTIME_PROVIDER,
+    model: input.model ?? env.MELA_RUNTIME_MODEL,
     cwd: input.cwd ?? process.cwd(),
     envPath: input.envPath ?? DEFAULT_CLI_CONFIG.envPath,
     toolsPath: input.toolsPath ?? env.MELA_RUNTIME_TOOLS ?? DEFAULT_CLI_CONFIG.toolsPath,

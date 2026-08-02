@@ -47,14 +47,14 @@ export class ConsoleApp {
   }
 
   async start(): Promise<void> {
-    await this.session.initialize();
+    const activeModel = await this.session.resolveActiveModel();
     this.renderer.renderBanner({
       version: '0.1.0',
       agentId: this.session.config.agentId,
       sessionId: this.session.sessionId,
       storagePath: this.session.config.storagePath,
-      provider: this.session.config.provider,
-      model: this.session.config.model,
+      provider: activeModel.provider,
+      model: activeModel.model,
       cwd: this.session.config.cwd,
     });
     const rl = this.options.readlineFactory?.() ?? createInterface({ input, output, prompt: 'mela> ' });
