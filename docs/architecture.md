@@ -1,4 +1,4 @@
-# RIA Agentic Runtime Architecture
+# Mela Agentic Runtime Architecture
 
 ## Canonical Entry Points
 

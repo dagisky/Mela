@@ -45,7 +45,7 @@ export class ConsoleRuntimeFactory {
     const provider = resolveModelProvider(config.provider, providers);
     const modelClient = this.overrides.modelClient ?? await provider.createClient(config);
     const fileStore = this.overrides.store ?? new FileStore(path.resolve(config.cwd, config.storagePath));
-    const eventBus = new EventBus(createLogger({ serviceName: 'ria-cli' }), { retainEvents: true });
+    const eventBus = new EventBus(createLogger({ serviceName: 'mela-cli' }), { retainEvents: true });
     const store = new EventedPersistenceStore({ store: fileStore, eventBus });
     const toolRegistry = this.overrides.toolRegistry ?? await this.loadToolRegistry(config);
     const policyEngine = this.overrides.policyEngine ?? new PolicyEngine();

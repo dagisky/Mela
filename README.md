@@ -1,6 +1,6 @@
-# RIA Agentic Runtime
+# Mela Agentic Runtime
 
-Standalone `@ria/runtime` package.
+Standalone `@mela/runtime` package.
 
 The runtime source lives at the project root under `src/`.
 

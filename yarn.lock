@@ -191,9 +191,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ria/runtime@workspace:.":
+"@mela/runtime@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@ria/runtime@workspace:."
+  resolution: "@mela/runtime@workspace:."
   dependencies:
     "@types/node": "npm:^20.0.0"
     typescript: "npm:^5.9.3"

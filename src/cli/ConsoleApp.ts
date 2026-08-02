@@ -57,7 +57,7 @@ export class ConsoleApp {
       model: this.session.config.model,
       cwd: this.session.config.cwd,
     });
-    const rl = this.options.readlineFactory?.() ?? createInterface({ input, output, prompt: 'ria> ' });
+    const rl = this.options.readlineFactory?.() ?? createInterface({ input, output, prompt: 'mela> ' });
     rl.on('SIGINT', () => {
       if (this.session.mode === ConsoleModes.AgentRunning && this.session.cancelActiveRun()) {
         this.renderer.renderCommandResult({ status: 'success', message: 'Cancellation requested.' });

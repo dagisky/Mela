@@ -13,6 +13,7 @@ tools:
   allow:
     - web_search
     - arxiv_search
+    - pdf_ingest
     - web_read
     - proof_audit
   deny: []

@@ -1,6 +1,6 @@
 # Agentic Runtime Gap Analysis
 
-This document tracks the main production/runtime gaps in `ria-agentic-runtime` compared with a mature coding-agent runtime such as `claude-code-rev`.
+This document tracks the main production/runtime gaps in `mela-agentic-runtime` compared with a mature coding-agent runtime such as `claude-code-rev`.
 
 The runtime already has strong core primitives: a multi-turn `ConversationEngine`, typed terminal results, tool registry and executor, approvals, policy checks, resource tracking, persistence stores, observability events, workflow orchestration, output validation, and child-run support. The gaps below are mostly depth and hardening work.
 

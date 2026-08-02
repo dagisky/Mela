@@ -5,6 +5,7 @@ version: 1.0.0
 description: Gather focused context before answering.
 allowed_tools:
   - arxiv_search
+  - pdf_ingest
 invocation_mode: preload
 validators: []
 ---

@@ -10,7 +10,7 @@ export class TextRenderer extends BaseRenderer {
   }
 
   renderBanner(input: ConsoleBannerInput): void {
-    this.write(`RIA Agentic Runtime`);
+    this.write(`Mela Agentic Runtime`);
     this.write(`agent=${input.agentId} session=${input.sessionId}`);
     this.write(`provider=${input.provider} model=${input.model}`);
     this.write(`storage=${input.storagePath}`);

@@ -46,7 +46,7 @@ const webReadTool = {
     const response = await fetch(input.url, {
       headers: {
         accept: 'text/html,text/plain,application/xml;q=0.9,*/*;q=0.1',
-        'user-agent': 'RIA-MathResearchAgent/1.0',
+        'user-agent': 'Mela-MathResearchAgent/1.0',
       },
     });
     if (!response.ok) {

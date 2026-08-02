@@ -1,15 +1,15 @@
 # CLI Module Implementation Plan
 
-This plan describes how to add a robust CLI module to `ria-agentic-runtime`, taking inspiration from:
+This plan describes how to add a robust CLI module to `mela-agentic-runtime`, taking inspiration from:
 
 - `minimal-agentic-runtime`: clean readline console, command bus, session object, renderer, dotenv loading, approval flow, simple `chat` and `console` scripts.
 - `claude-code-rev`: mature command surface, fast startup paths, permission prompts, session controls, structured output modes, status/debug commands, cancellation, and production-grade operator workflows.
 
-The goal is not to copy either project directly. The goal is to build a clean, dependency-light CLI that fits `ria-agentic-runtime` as a standalone runtime package and exceeds `claude-code-rev` as a reusable agentic-runtime CLI.
+The goal is not to copy either project directly. The goal is to build a clean, dependency-light CLI that fits `mela-agentic-runtime` as a standalone runtime package and exceeds `claude-code-rev` as a reusable agentic-runtime CLI.
 
 ## North Star
 
-The RIA CLI should be better than `claude-code-rev` in the areas where a standalone runtime should win:
+The Mela CLI should be better than `claude-code-rev` in the areas where a standalone runtime should win:
 
 - Cleaner architecture with hard boundaries between CLI shell, runtime assembly, and core runtime.
 - Provider-portable model integration instead of product-specific provider assumptions.
@@ -359,7 +359,7 @@ The console should:
 Prompt:
 
 ```text
-ria> 
+mela> 
 ```
 
 ## Runtime Factory
@@ -432,9 +432,9 @@ Optional:
 
 ```text
 OPENAI_MODEL=gpt-5.4-mini
-RIA_RUNTIME_STORAGE=.runtime
-RIA_RUNTIME_AGENT=default
-RIA_RUNTIME_PROVIDER=openai
+MELA_RUNTIME_STORAGE=.runtime
+MELA_RUNTIME_AGENT=default
+MELA_RUNTIME_PROVIDER=openai
 ```
 
 Also add:
@@ -509,7 +509,7 @@ The CLI should not hard-code provider-specific behavior outside provider modules
 
 ## Agent Loading
 
-RIA currently accepts `AgentDefinition` directly. The CLI needs a local provider.
+Mela currently accepts `AgentDefinition` directly. The CLI needs a local provider.
 
 Add:
 
@@ -684,7 +684,7 @@ Export format:
 
 ```ts
 export interface CliRunExport {
-  readonly schemaVersion: 'ria.cli.run-export.v1';
+  readonly schemaVersion: 'mela.cli.run-export.v1';
   readonly session: unknown;
   readonly messages: readonly unknown[];
   readonly toolCalls: readonly unknown[];
@@ -694,7 +694,7 @@ export interface CliRunExport {
 }
 ```
 
-This gives RIA a clearer replay/debug artifact than a product-specific session log.
+This gives Mela a clearer replay/debug artifact than a product-specific session log.
 
 ## Safety and Permissions
 
@@ -989,7 +989,7 @@ The CLI module is ready when:
 
 ## Better-Than-Claude Checklist
 
-RIA CLI should be considered better than `claude-code-rev` as a reusable runtime CLI when all of these are true:
+Mela CLI should be considered better than `claude-code-rev` as a reusable runtime CLI when all of these are true:
 
 - CLI shell, runtime assembly, and core runtime are cleanly separated.
 - The CLI can be embedded by another application without inheriting product-specific services.

@@ -1,5 +1,5 @@
 {
-  "name": "@ria/runtime",
+  "name": "@mela/runtime",
   "version": "0.1.0",
   "type": "module",
   "packageManager": "yarn@4.6.0",

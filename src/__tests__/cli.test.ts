@@ -39,7 +39,7 @@ describe('CLI primitives', () => {
   });
 
   it('loads dotenv values without overriding existing env', async () => {
-    const dir = await mkdtemp(path.join(tmpdir(), 'ria-cli-env-'));
+    const dir = await mkdtemp(path.join(tmpdir(), 'mela-cli-env-'));
     const envPath = path.join(dir, '.env');
     await writeFile(envPath, 'OPENAI_MODEL="from-file"\nEXISTING=from-file\n# comment\n', 'utf8');
     const env: NodeJS.ProcessEnv = { EXISTING: 'kept' };
@@ -207,7 +207,7 @@ describe('CLI runtime', () => {
 });
 
 async function createTempRuntimeProject(): Promise<string> {
-  const cwd = await mkdtemp(path.join(tmpdir(), 'ria-cli-runtime-'));
+  const cwd = await mkdtemp(path.join(tmpdir(), 'mela-cli-runtime-'));
   await mkdir(path.join(cwd, 'agents'), { recursive: true });
   await mkdir(path.join(cwd, 'skills'), { recursive: true });
   await mkdir(path.join(cwd, 'tools'), { recursive: true });

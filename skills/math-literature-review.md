@@ -6,6 +6,7 @@ description: Search and inspect mathematical literature before using citations o
 allowed_tools:
   - web_search
   - arxiv_search
+  - pdf_ingest
   - web_read
 invocation_mode: preload
 validators: []
@@ -16,6 +17,8 @@ validators: []
 Before attempting a research-level proof, identify the mathematical area, keywords, standard objects, and likely known results.
 
 Use `arxiv_search` for relevant papers when the problem mentions named topics, recent work, conjectures, or specialized terminology.
+
+Use `pdf_ingest` when a public PDF link needs full-document parsing through ingestion-ms.
 
 Use `web_search` for broader literature discovery, current pages, math blogs, seminar notes, documentation, and source leads outside arXiv. Use `allowed_domains` or `blocked_domains` when a trusted or untrusted source boundary matters.
 

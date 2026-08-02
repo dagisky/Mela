@@ -7,7 +7,7 @@ import { FileStore } from '../persistence/FileStore.js';
 import { createTerminalResult } from '../runtime/TerminalResult.js';
 
 async function tempRoot(name: string): Promise<string> {
-  const root = path.join('C:\\tmp', `ria-engine-${name}-${Date.now()}-${Math.random().toString(16).slice(2)}`);
+  const root = path.join('C:\\tmp', `mela-engine-${name}-${Date.now()}-${Math.random().toString(16).slice(2)}`);
   await mkdir(root, { recursive: true });
   return root;
 }

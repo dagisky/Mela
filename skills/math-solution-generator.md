@@ -6,6 +6,7 @@ description: Generate candidate proofs, counterexamples, reductions, and researc
 allowed_tools:
   - web_search
   - arxiv_search
+  - pdf_ingest
   - web_read
 invocation_mode: preload
 validators: []

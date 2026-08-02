@@ -7,6 +7,7 @@ allowed_tools:
   - proof_audit
   - web_search
   - arxiv_search
+  - pdf_ingest
   - web_read
 invocation_mode: preload
 validators: []

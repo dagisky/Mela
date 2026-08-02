@@ -9,7 +9,7 @@ import { createTerminalResult } from '../runtime/TerminalResult.js';
 import { createErrorToolResult } from '../tools/RuntimeTool.js';
 
 async function tempRoot(name: string): Promise<string> {
-  const root = path.join('C:\\tmp', `ria-runtime-${name}-${Date.now()}-${Math.random().toString(16).slice(2)}`);
+  const root = path.join('C:\\tmp', `mela-runtime-${name}-${Date.now()}-${Math.random().toString(16).slice(2)}`);
   await mkdir(root, { recursive: true });
   return root;
 }
